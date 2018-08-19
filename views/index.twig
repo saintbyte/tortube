@@ -1,5 +1,8 @@
 {% extends "base.twig" %}
 {% block title %}{{ title }}{%endblock%}
 {% block content %}
-<h1>{{ title }}</h1>
+<h1>video</h1>
+{% for video in videos %}
+    {% include "video_list_item.twig" %}
+{% endfor %}
 {% endblock %}

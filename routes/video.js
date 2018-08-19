@@ -1,9 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const models  = require('../models');
+
+router.get('/watch/', (req, res) => {
+   const video_uid = req.query.v ? req.query.v :"";
+   if (video_uid === "")
+   {
+       console.log("video_uid is empty");
+       return res.render("error",{"error": "Video not found"})
+   }
+   models.Video.findOne({ where: { video_uid: video_uid }}).then((result) => {
+       res.render("watch",{"video": result})
+   });
+
+});
 
 router.get('/stream', (req, res) => {
-    const path = 'assets/sample.mp4';
+    const video_uid = req.query.v ? req.query.v :"";
+    const path = 'static/video/'+video_uid+'.mp4';
     const stat = fs.statSync(path);
     const fileSize = stat.size;
     const range = req.headers.range;

@@ -11,8 +11,8 @@ const models  = require('../models');
 
 const findVideoStreamIFile = (arr) => {
     for(let item in arr)  {
-        if (item['codec_type'] !== 'video') {
-            return item;
+        if (arr[item]['codec_type'] === 'video') {
+            return arr[item];
         }
     }
     return false;
@@ -21,38 +21,50 @@ const findVideoStreamIFile = (arr) => {
 const uploadError = (req,res,reason) => {
     let ctx = {};
     ctx['error'] = reason;
+    fs.unlink(req.file.path, (err) => {});
     return res.render('upload_complete', ctx);
 };
-router.post('/', upload.single('video'), (req, res, next) => {
-    console.log(req);
-    let ctx = {'request': req};
-    if (req.file.mimetype === 'video/mp4') {
-        const thumbler = require('../utils/my-video-thumb');
 
+router.post('/', upload.single('video'), (req, res, next) => {
+    let ctx = {'request': req};
+    let title = req.body.title ?  req.body.title : "";
+    console.log(title);
+    if (req.file && req.file.mimetype === 'video/mp4') {
         ffmpeg(req.file.path)
             .input(req.file.path)
             .ffprobe(0, (err, data) => {
-                if (err) throw err;
+                if (err) return uploadError(req,res,"Нет видео в файле. Не удалось получить данные о потоках")
                 console.log('file1 metadata:');
-                console.dir(data);
-                let video_stream_in_file = findVideoStreamIFile(data['streams']);
-                if (!video_stream_in_file)   {
-                   return uploadError(req,res,"Нет видео в файле")
-                }
 
-                thumbler.extract(req.file.path, 'static/video/' + req.file.filename + '.png', '00:00:01', false, (error, stdout, stderr) => {
+                const video_stream_in_file = findVideoStreamIFile(data['streams']);
+                if (!video_stream_in_file)   {
+                   return uploadError(req,res,"Нет видео в файле. Нет потока с видео")
+                }
+                console.dir( video_stream_in_file );
+                const duration = parseInt(parseFloat(data['format']['duration']),10);
+                let screen_time = '00:00:01';
+                if (duration === 1) screen_time = '00:00:00';
+                if (duration > 1) screen_time = '00:00:01';
+                if (duration > 30) screen_time = '00:00:10';
+                if (duration > 120) screen_time = '00:00:30';
+                const thumbler = require('../utils/my-video-thumb');
+                thumbler.extract(req.file.path, 'static/video/' + req.file.filename + '.png',  screen_time, false, (error, stdout, stderr) => {
+                    if (error) return uploadError(req,res,"Нет видео в файле. Не удалось получить превью");
                     console.log('snapshot saved to snapshot.png (200x125) with a frame at 00:00:01');
+                    fs.rename(req.file.path, 'static/video/' + req.file.filename + '.mp4', (err) => {
+                        if (err) throw err;
+                    });
+                });
+                models.Video.create({
+                    video_uid: req.file.filename,
+                    title: title,
+                    width: video_stream_in_file['width'],
+                    height: video_stream_in_file['height'],
+                    duration: duration
                 });
             });
         /*
-        models.Video.create(
-            video_uid:  req.file.filename,
-            title: '',
-            width: ,
-            height: DataTypes.INTEGER,
-            duration: parsInt(parseFloat(data['streams']['format']['duration']),10)
-        )
-            .then(() => User.findOrCreate({where: {username: 'fnord'}, defaults: {job: 'something else'}}))
+              .then(() => User.findOrCreate({where: {username: 'fnord'}, defaults: {job: 'something else'}}))
             .spread((user, created) => {
                 console.log(user.get({
                     plain: true
@@ -73,20 +85,19 @@ router.post('/', upload.single('video'), (req, res, next) => {
                 The array returned by findOrCreate gets spread into its 2 parts by the "spread" on line 69, and the parts will be passed as 2 arguments to the callback function beginning on line 69, which will then treat them as "user" and "created" in this case. (So "user" will be the object from index 0 of the returned array and "created" will equal "false".)
 
             }) */
-        /*
-        fs.unlink(req.file.path, (err) => {
-            if (err) throw err;
-        });
 
-        fs.rename(req.file.path, 'static/video/' + req.file.filename + '.mp4', (err) => {
-            if (err) throw err;
-        });
-        */
+
+
+
+
     }
     else {
-        fs.unlink(req.file.path, (err) => {
-            if (err) throw err;
-        });
+        if (req.file) {
+            fs.unlink(req.file.path, (err) => {
+                if (err) throw err;
+            });
+        }
+        console.log('Else');
         return uploadError(req,res,"Мы принимаем только mp4 файлы")
     }
     res.render('upload_complete', ctx);

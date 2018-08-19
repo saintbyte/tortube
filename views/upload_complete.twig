@@ -1,7 +1,10 @@
 {% extends "base.twig" %}
+{% block title %}Загрузка завершена{%endblock%}
 {% block content %}
-Загружено
+
 {% if error %}
 {{ error }}
+{% else %}
+    Загружено
 {% endif %}
 {% endblock %}

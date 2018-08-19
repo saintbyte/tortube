@@ -1,0 +1,7 @@
+{% extends "base.twig" %}
+{% block title %}Upload{%endblock%}
+{% block content %}
+    <h1>{{ video.title }}</h1>
+    <video src="/stream/?v={{ video.video_uid }}" controls="controls" poster="/static/video/{{ video.video_uid }}.png" height="{{ video.height }}" width="{{ video.width }}">
+    </video>
+{% endblock %}

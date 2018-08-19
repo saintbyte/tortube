@@ -1,7 +1,9 @@
 {% extends "base.twig" %}
+{% block title %}Upload{%endblock%}
 {% block content %}
 <form action="" method="post" enctype="multipart/form-data">
-    <input type="file" name="video">
+    Title: <input type="text" name="title"><br /><br />
+    <input type="file" name="video"><br /><br />
     <button type="submit">Upload</button>
 </form>
 {% endblock %}

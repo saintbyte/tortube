@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 const users = require('./routes/users');
 const upload = require('./routes/upload');
-const video = require('./routes/video');
+const video_route = require('./routes/video');
 const app = express();
 
 // view engine setup
@@ -27,7 +27,7 @@ app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/upload', upload);
-app.use('/video', video);
+app.use('/', video_route);
 /// catch 404 and forwarding to error handler
 app.use((req, res, next) => {
     let err = new Error('Not Found');

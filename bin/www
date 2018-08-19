@@ -1,0 +1,39 @@
+#!/usr/local/bin/node
+const debug = require('debug')('my-application');
+const http = require('http');
+var models = require('../models');
+
+var app = require('../app');
+
+app.set('port', process.env.PORT || 3000);
+const server = http.createServer(app);
+
+models.sequelize.sync().then( () => {
+    server.listen(app.get('port'), () => {
+        debug('Express server listening on port ' + server.address().port);
+    });
+    server.on('error', (error) => {
+        if (error.syscall !== 'listen') {
+            throw error;
+        }
+        switch (error.code) {
+            case 'EACCES':
+                console.error(' requires elevated privileges');
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                console.error(' is already in use');
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
+    });
+
+    server.on('listening', () => {
+        debug('Listening');
+    });
+});
+
+
+

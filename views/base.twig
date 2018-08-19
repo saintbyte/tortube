@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="dns-prefetch" href="https://fonts.google.com" />
+    <link href="https://fonts.googleapis.com/css?family=Lato|Roboto" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all" href="/static/css/style.css" />
+    <meta charset="UTF-8">
+    <title>{% block title %}{%endblock%}</title>
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+{% block body %}
+<div>
+<div class="logo">
+<img src="/static/images/logo.png" alt="logo"/>
+</div>
+<ul class="top_menu__ul">
+    <li><a href="/">Home</a></li>
+    <li><a href="/upload/">Upload</a></li>
+</ul>
+</div>
+<div class="clear"></div>
+<div class="content">
+{% block content %}
+{% endblock %}
+</div>
+{% endblock %}
+</body>
+</html>

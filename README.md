@@ -10,7 +10,7 @@ EN: Small template for your own youtube in tor
 ###Установка
 1. Склонировать из гитхаба git clone git@github.com:saintbyte/tortube.git
 2. Собрать ffmpeg c поддержкой H264 
-Примерно так:  ./configure --enable-gpl --enable-nonfree --enable-version3 --enable-libvpx --enable-libmp3lame --enable-libx264
+Примерно так:  ./configure --enable-gpl --enable-nonfree --enable-version3 --enable-libvpx --enable-libmp3lame --enable-libx264 --enable-encoder=png
 2.1 может понадобиться apt install nasm gcc lame libmp3lame-dev libvpx-dev libvpx3 libvpx-dev libvpx3 libx264-dev libx264-148
 3. Поставить зависимости: cd  tortube && npm install
 4. Настроить подключение к базе в файле config/config.js
@@ -22,7 +22,7 @@ DEBUG=development ENV=development ./node_modules/.bin/nodemon bin/www
 
 ###INSTALL
 1. Clone repo from github git clone git@github.com:saintbyte/tortube.git
-2. Make ffmpeg with support h264 . Some like that ./configure --enable-gpl --enable-nonfree --enable-version3  --enable-libvpx --enable-libmp3lame --enable-libx264
+2. Make ffmpeg with support h264 . Some like that ./configure --enable-gpl --enable-nonfree --enable-version3 --enable-libvpx --enable-libmp3lame --enable-libx264 --enable-encoder=png
 2.1 May need apt install nasm gcc lame libmp3lame-dev libvpx-dev libvpx3 libvpx-dev libvpx3 libx264-dev libx264-148
 3. Install deps: cd  tortube && npm install
 4. Setup database connection in file config/config.js

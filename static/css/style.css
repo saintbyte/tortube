@@ -1,0 +1,35 @@
+*,body,html {
+   font-family: 'Roboto', sans-serif;
+   font: 14px 'Roboto', Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+.logo
+{
+    width: 286px;
+    height: 118px;
+    float: left;
+}
+ul.top_menu__ul
+{
+    float: left;
+    height: 118px;
+    list-style: none;
+
+}
+ul.top_menu__ul li
+{
+    float: left;
+    margin-left: 30px;
+}
+.clear
+{
+    clear: both;
+}
+.view_item_preview
+{
+    max-width: 320px;
+    max-height: 320px;
+}
